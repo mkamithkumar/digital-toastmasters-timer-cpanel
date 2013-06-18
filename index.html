@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="author" content="Amith Kumar M K">
+		<meta name="description" content="Digital Toastmasters Speech Timer using Twitter Bootstrap">
+    	<title>Digital Toastmasters Speech Timer</title>
+		<link rel="stylesheet" media="screen" type="text/css" href="assets/css/bootstrap.min.css" />
+		<link rel="stylesheet" media="screen" type="text/css" href="assets/css/custom.css" />
+    	<script type="text/javascript" src="assets/js/jquery-1.10.1.min.js"></script>
+		<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="assets/js/timer.js"></script>
+	</head>
+	<body onload="expando()" onresize="expando()">
+		<div class="container-fluid">
+			<div class="masthead">
+				<h1>Toastmasters Timer Control Panel</h1>
+				<hr>
+			</div>
+			<div class="container-fluid" >
+  				<div class="row-fluid">
+    					<div class="span2">
+      						 <div>
+        						<img src="assets/img/offlight.gif"  border="0" alt="Red Light" name="red">
+        						<br>
+        						<img src="assets/img/offlight.gif" border="0" alt="Yellow Light" name="yellow">
+        						<br>
+        						<img src="assets/img/offlight.gif"  border="0" alt="Green Light" name="green">
+    						</div>
+    					</div>
+    					<div class="span10">
+     						 <form name="myForm">
+       							 <!-- present a selection  of speech type/durations ... -->
+        						<table class="table table-striped table-bordered">
+            						<tr>
+                						<th>Speech Type</th>
+										<th>Green</th>
+										<th>Yellow</th>
+										<th>Red</th>
+									</tr>
+									<tr>
+										<td>
+											<input type="radio" name="speechType" onclick="setSpeech(0)">&nbsp; Table Topics
+										</td>
+										<td>1:00</td>
+										<td>1:30</td>
+										<td>2:00</td>
+									</tr>
+									<tr>
+										<td>
+											<input type="radio" name="speechType" onclick="setSpeech(1)">&nbsp; Evaluation
+										</td>
+										<td>2:00</td>
+										<td>2:30</td>
+										<td>3:00</td>
+									</tr>
+									<tr>
+										<td>
+											<input type="radio" name="speechType" onclick="setSpeech(2)">&nbsp; Icebreaker
+										</td>
+										<td align="right">4:00</td>
+										<td align="right">5:00</td>
+										<td align="right">6:00</td>
+									</tr>
+									<tr>
+										<td>
+											<input type="radio" name="speechType" onclick="setSpeech(3)" checked="">&nbsp; Std.Speech
+										</td>
+										<td align="right">5:00</td>
+										<td align="right">6:00</td>
+										<td align="right">7:00</td>
+									</tr>
+									<tr>
+										<td>
+											<input type="radio" name="speechType" onclick="setSpeech(4)">&nbsp; Adv.Speech
+										</td>
+										<td align="right">8:00</td>
+										<td align="right">9:00</td>
+										<td align="right">10:00</td>
+									</tr>
+									<tr>
+										<td>
+											<input type="radio" name="speechType" onclick="setSpeech(5)">&nbsp; Custom
+										</td>
+										<td align="right">
+											<input type="text" align="right" size="5" name="greenAt" onchange="parseTime(0)">
+										</td>
+										<td align="right">
+											<input type="text" align="right" size="5" name="yellowAt" onchange="parseTime(1)">
+										</td>
+										<td align="right">
+											<input type="text" align="right" size="5" name="redAt" onchange="parseTime(2)">
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<input type="radio" name="speechType" onclick="setSpeech(6)">&nbsp; Test
+										</td>
+										<td align="right">0:02</td>
+										<td align="right">0:04</td>
+										<td align="right">0:06</td>
+									</tr>
+							</table>
+        					<br>
+							<label class="checkbox">
+		   						<input type="checkbox" id ="disqual" name="disqualFlash" />Flash on Disqualification <font size="-1"><i>(Red + 30)</i></font>			
+							</label> 	
+							<div id="info" class="alert alert-info">
+								<button type="button" class="close" data-dismiss="alert">×</button>
+								<b>Elapsed Time:</b>&nbsp;&nbsp;<span id="elapsed-time" class="text-deco"></span>
+							</div>
+							<!--<p>
+								
+		    					<input type="text" size="2" name="Minutes">&nbsp; min(s)&nbsp;&nbsp; 
+		    					<input type="text" size="2" name="Seconds">&nbsp; sec(s)	
+							</p>-->	
+							<div class="button-margin">    
+		    					<!-- This button will reset the timer -->
+								<input type="button" class="btn btn-large btn-success input-margin" onclick="getStarted();" id="start" name="StartStop" value="Start Timer" />
+		    					<input type="button" class="btn btn-large btn-primary" onclick="setStop();" value="Master Reset"> 
+		    				</div>
+							<p>
+								<!-- ******************************************************************** -->
+								<!-- The follwing Input boxes are used primarily for debug: -->
+								<!-- In standard mde, use "type=hidden" and comment out the labels; -->
+								<!-- in Debug mode, use "type=text" and uncomment the labels --> 
+
+
+								<!-- This input (name="timerID") shows the timer ID. -->
+								<input type="hidden" size="10" name="timerID"> <!-- timerID<br> -->
+
+								<!-- This input (NAME="flashTimerID") shows the flash timer ID.  -->
+								<input type="hidden" size="10" name="flashTimerID"> <!-- flashTimerID<br>  -->
+
+								<!-- This input (NAME="flashing") shows if the lights are flashing (flashing = 1). -->
+								<input type="hidden" size="2" name="flashing"> <!-- Flashing<br>  -->
+
+								<!-- This input (NAME="flash") shows (if the lights are flashing) if they're on (true) or off (false)  -->
+								<input type="hidden" size="4" name="flash"> <!-- Flash<br> -->
+
+								<!-- This input (NAME="Mode") shows the value of modeValue. -->
+								<input type="hidden" size="2" name="Mode"> <!-- Mode<br>  -->
+
+								<!-- ******************************************************************** -->
+
+
+		    					</p>
+							</form>
+    					</div>
+  				</div>
+			</div>
+		</div>
+	<audio id="audio" src="assets/audio/Buzzer.ogg" preload="auto"></audio>
+	</body>
+</html>
